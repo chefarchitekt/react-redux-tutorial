@@ -7,7 +7,7 @@ import webpackConfig from '../webpack.config.dev';
 
 let app = express();
 
-app.user(webpackMiddleware(webpack(webpackConfig)));
+app.use(webpackMiddleware(webpack(webpackConfig)));
 
 app.get('/*', (req, res) => {
 	//res.send('hello world');
