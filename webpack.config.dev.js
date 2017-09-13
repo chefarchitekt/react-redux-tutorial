@@ -15,6 +15,6 @@ export default {
         ]
     },
     resolve: {
-        extensions: [ '', '.js']
+        extensions: [ '.js']
     }
 }
