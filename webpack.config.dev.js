@@ -5,6 +5,7 @@ export default {
     output: {
         path: '/',
         filename: 'bundle.js'
+        //if dont include filename, there will always error on dom syntax
     },
     module: {
         loaders: [
