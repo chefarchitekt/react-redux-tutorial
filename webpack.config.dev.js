@@ -1,7 +1,7 @@
 import path from 'path';
 
 export default {
-    devtools: 'eval-source-map',
+    devtool: 'eval-source-map',
     entry: path.join(__dirname, '/client/index.js'),
     output: {
         path: '/',
