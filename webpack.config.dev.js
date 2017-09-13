@@ -10,13 +10,13 @@ export default {
             {
                 test: /\.js$/,
                 include: path.join(__dirname, 'client'),
-                loaders: [ 'babel-loader' ]
+                loaders: [ 'babel' ]
                 //new webpack API must include suffix -loader
             }
         ]
     },
     resolve: {
-        extensions: [ '.js' ]
+        extensions: [ '', '.js' ]
         //new webpack API cannot allow empty ('') extensions
     }
 }
