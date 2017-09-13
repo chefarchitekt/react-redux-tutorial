@@ -1,7 +1,12 @@
 import express from 'express';
 import path from 'path';
 
+import webpack from 'webpack';
+import webpackMiddleware from 'webpack-dev-middleware';
+
 let app = express();
+
+app.user(webpackMiddleware(webpack(webpackConfig)));
 
 app.get('/*', (req, res) => {
 	//res.send('hello world');
