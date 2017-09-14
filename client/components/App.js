@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import Greetings from './Greetings';
 
 /*
 export default () => {
@@ -13,7 +14,7 @@ export default () => {
 class App extends Component {
     render() {
         return (
-            <h1>Hello from React!!!**#@##II</h1>
+            <Greetings />
         );
     }
 }
