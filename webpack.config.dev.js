@@ -14,7 +14,7 @@ export default {
         //if dont include filename, there will always error on dom syntax
     },
     plugins: [
-        new webpack.NoErrorsPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(), //Using NoErrorsPlugin is deprecated.
         new webpack.optimize.OccurrenceOrderPlugin(), //ensure consistent built hashes
         new webpack.HotModuleReplacementPlugin()
     ],
