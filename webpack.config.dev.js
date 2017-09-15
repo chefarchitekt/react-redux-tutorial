@@ -26,6 +26,12 @@ export default {
                 loaders: [ 'react-hot-loader', 'babel-loader' ]
                 //new webpack API must include suffix -loader
                 //react-hot-loader will teach react how to load itself
+            },
+            { 
+                test: /\.(woff2?|jpe?g|png|gif|ico|svg)$/, 
+                include: path.join(__dirname, 'client/images'),
+                loaders:  [ 'file-loader' ]
+                //use: 'file-loader?name=./client/images/[name].[ext]' 
             }
         ]
     },

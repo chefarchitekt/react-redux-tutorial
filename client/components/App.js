@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Greetings from './Greetings';
+import NavigationBar from './NavigationBar';
 
 /*
 export default () => {
@@ -14,7 +14,9 @@ export default () => {
 class App extends Component {
     render() {
         return (
-            <Greetings />
+            <div className="container">
+                <NavigationBar />
+            </div>         
         );
     }
 }
