@@ -30,7 +30,7 @@ export default {
             { 
                 test: /\.(woff2?|jpe?g|png|gif|ico|svg)$/, 
                 include: path.join(__dirname, 'client/images'),
-                loaders:  [ 'file-loader' ]
+                loader:  'file-loader'
                 //use: 'file-loader?name=./client/images/[name].[ext]' 
             }
         ]
