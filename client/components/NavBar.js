@@ -1,4 +1,5 @@
 import React, { Component } from 'react'; 
+import { Link } from 'react-router';
 
 //const pathToLogo = require('../images/spy.png');
 //const getLogo = () => `<img src='${pathToLogo}' alt='Grumpy Cat' />`;
@@ -16,9 +17,9 @@ export default () => {
                                 <span className="icon-bar"></span>
                                 <span className="icon-bar"></span>
                             </button>
-                        <div className="navbar-brand" href="#" style={{ paddingTop:0 }}>
+                        <Link to="/" className="navbar-brand"style={{ paddingTop:0 }}>
                             <a href=""><img src={require('../images/spy.png')} style={{ width:50, height:50 }}/></a>
-                        </div>
+                        </Link>
                     </div>
 
                     
@@ -30,7 +31,7 @@ export default () => {
                         </ul>
 
                         <ul className="nav navbar-nav navbar-right">
-                            <li><a href="#">Sign Up</a></li>
+                            <li><Link to="/signup">Sign Up</Link></li>
                         </ul>
                     </div>
                 </div>
