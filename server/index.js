@@ -6,7 +6,7 @@ import webpackMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from '../webpack.config.dev';
 
-let app = express();
+const app = express();
 const compiler = webpack(webpackConfig);
 
 app.use(webpackMiddleware(compiler));
