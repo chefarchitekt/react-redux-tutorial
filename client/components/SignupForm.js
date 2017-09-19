@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import map from 'lodash/map';
+//import axios from 'axios';
 
 import TimeZone from './TimeZone';
 
@@ -31,11 +32,15 @@ class SignupForm extends Component {
     onSubmit(e) {
         e.preventDefault();
         console.log(this.state);
+        //axios.post('/api/users', { user: this.state });
+        this.props.userSignupRequestProp(this.state); 
+        //this makes props expect userSignupRequest function from 
+        //parent component's render function (SignupPage)
     }
 
     render() {
         const options = map(TimeZone(), (val, key) => (<option key={val.text} value={val.value}>{val.text}</option>));
-        console.log(options);
+        //console.log(options);
 
         return (
             <form onSubmit={this.onSubmit}>
@@ -102,5 +107,9 @@ class SignupForm extends Component {
         );
     }
 }
+
+SignupForm.propTypes = {
+    userSignupRequestProp: React.PropTypes.func.isRequired
+};
 
 export default SignupForm;
