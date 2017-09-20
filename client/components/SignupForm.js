@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import map from 'lodash/map';
 //import axios from 'axios';
-
+import { connect } from 'react-redux';
+import { userSignupRequest } from '../actions/signupActions';
 import TimeZone from './TimeZone';
 
 
@@ -33,7 +34,7 @@ class SignupForm extends Component {
         e.preventDefault();
         console.log(this.state);
         //axios.post('/api/users', { user: this.state });
-        this.props.userSignupRequestProp(this.state); 
+        this.props.userSignupRequest(this.state); 
         //this makes props expect userSignupRequest function from 
         //parent component's render function (SignupPage)
     }
@@ -109,7 +110,16 @@ class SignupForm extends Component {
 }
 
 SignupForm.propTypes = {
-    userSignupRequestProp: React.PropTypes.func.isRequired
+    userSignupRequest: React.PropTypes.func.isRequired
 };
 
-export default SignupForm;
+//use connect higher order function to provide this thunk function page component from redux
+//connect(mapStateToProps (state , return object), ,mapDispatchToProps)\
+//mapStateToProps connect to redux store
+//mapDispatchToProps psecify action creator wrapped in dispatch
+
+
+//export default connect((state) => { return {}; }, { userSignupRequest })(SignupPage);
+
+export default connect(null, { userSignupRequest })(SignupForm);
+
