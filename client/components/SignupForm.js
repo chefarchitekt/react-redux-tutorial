@@ -4,6 +4,7 @@ import map from 'lodash/map';
 import { connect } from 'react-redux';
 import { userSignupRequest } from '../actions/signupActions';
 import TimeZone from './TimeZone';
+import validateInput from '../validations/validateInput';
 
 
 class SignupForm extends Component {
@@ -14,7 +15,9 @@ class SignupForm extends Component {
             email: '',
             password: '',
             passwordConfirmation: '',
-            timezone: ''
+            timezone: '',
+            errors: {},
+            server_error: {}
         };
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -32,14 +35,22 @@ class SignupForm extends Component {
 
     onSubmit(e) {
         e.preventDefault();
+        //this.setState({ errors: {} });
         console.log(this.state);
         //axios.post('/api/users', { user: this.state });
-        this.props.userSignupRequest(this.state); 
+        this.props.userSignupRequest(this.state).then(
+            () => {},
+            ({ data }) => {
+                console.log(data);
+                this.setState({ errors: data });
+            }
+        );
         //this makes props expect userSignupRequest function from 
         //parent component's render function (SignupPage)
     }
 
     render() {
+        const { errors } = this.state;
         const options = map(TimeZone(), (val, key) => (<option key={val.text} value={val.value}>{val.text}</option>));
         //console.log(options);
 
@@ -55,6 +66,7 @@ class SignupForm extends Component {
                         name="username"
                         className="form-control"
                     />
+                    {errors.username && <span className="help-block">{errors.username}</span>}
                 </div>
                 <div className="form-group">
                     <label className="control-label" htmlFor="email">Email</label>
