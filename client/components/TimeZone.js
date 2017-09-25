@@ -1,5 +1,5 @@
 import data from '../data/timezones.json';
 
-const TimeZone = () => data;
+const TimeZone = () => (data);
 
 export default TimeZone;

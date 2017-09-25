@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 
 import App from './components/App';
 import Greetings from './components/Greetings';
-import SignupPage from './pages/SignupPage'
+import SignupPage from './pages/SignupPage';
 
 //import { routes } from './routes';
 

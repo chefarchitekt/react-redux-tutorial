@@ -1,6 +1,7 @@
 import validator from 'validator';
 import isEmpty from 'lodash/isEmpty';
 
+//validator isNull is deprecated 
 const validateInput = (data) => {
     const errors = {};
     
@@ -10,10 +11,6 @@ const validateInput = (data) => {
     
         if (validator.isEmpty(data.email)) {
             errors.email = 'This field is required';
-        }
-    
-        if (!validator.isEmail(data.email)) {
-            errors.email = 'Email is invalid';
         }
     
         if (validator.isEmpty(data.password)) {

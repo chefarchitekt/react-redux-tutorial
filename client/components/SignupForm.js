@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import map from 'lodash/map';
+import _ from 'lodash';
+import classnames from 'classnames';
 //import axios from 'axios';
 import { connect } from 'react-redux';
+import { browserHistory } from 'react-router';
+
+import { TextFieldGroup, SelectGroup } from '../common';
+//SelectGroup is not done yet
 import { userSignupRequest } from '../actions/signupActions';
 import TimeZone from './TimeZone';
 import validateInput from '../validations/validateInput';
@@ -16,8 +21,9 @@ class SignupForm extends Component {
             password: '',
             passwordConfirmation: '',
             timezone: '',
-            errors: {},
-            server_error: {}
+            isLoading: false,
+            input_errors: {},
+            server_errors: {}
         };
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -35,84 +41,107 @@ class SignupForm extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        //this.setState({ errors: {} });
-        console.log(this.state);
-        //axios.post('/api/users', { user: this.state });
-        this.props.userSignupRequest(this.state).then(
-            () => {},
-            ({ data }) => {
-                console.log(data);
-                this.setState({ errors: data });
-            }
-        );
-        //this makes props expect userSignupRequest function from 
-        //parent component's render function (SignupPage)
+        if (this.isValid()) {
+            this.setState({ input_errors: {}, server_errors: {}, isLoading: true });
+            console.log(this.state);
+            //axios.post('/api/users', { user: this.state });
+            this.props.userSignupRequest(this.state).then(
+                () => {
+                    //browserHistory.push('/');
+                    this.context.router.push('/');
+                },
+                ({ err }) => {
+                    console.log(err);
+                    this.setState({ input_errors: err.data, server_errors: err });
+                }
+            );
+            //this makes props expect userSignupRequest function from 
+            //parent component's render function (SignupPage)
+        }
+    }
+
+    isValid() {
+        const { errors, isValid } = validateInput(this.state);
+        if (!isValid) {
+            this.setState({ input_errors: errors });
+        }
+
+        return isValid;
     }
 
     render() {
-        const { errors } = this.state;
-        const options = map(TimeZone(), (val, key) => (<option key={val.text} value={val.value}>{val.text}</option>));
-        //console.log(options);
+        const { input_errors } = this.state;
+        
+        const data = TimeZone();
+        //console.log(JSON.stringify(data));
+        //const options = (data, (val, key) => (key:val.text,  value:val.value)));
+        const options = _.map(data, item => _.assign(
+            { key: item.text, val: item.value }
+        ));
+        console.log(JSON.stringify(options));
+        
 
         return (
             <form onSubmit={this.onSubmit}>
                 <h1>Join our community</h1>
-                <div className="form-group">
-                    <label className="control-label" htmlFor="username">Username</label>
-                    <input 
-                        onChange={this.onChange}
-                        value={this.state.username}
-                        type="text"
-                        name="username"
-                        className="form-control"
-                    />
-                    {errors.username && <span className="help-block">{errors.username}</span>}
-                </div>
-                <div className="form-group">
-                    <label className="control-label" htmlFor="email">Email</label>
-                    <input 
-                        onChange={this.onChange}
-                        value={this.state.email}
-                        type="text"
-                        name="email"
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group">
-                    <label className="control-label" htmlFor="password">Password</label>
-                    <input 
-                        onChange={this.onChange}
-                        value={this.state.password}
-                        type="text"
-                        name="password"
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group">
-                    <label className="control-label" htmlFor="passwordConfirmation">Confirm Password</label>
-                    <input 
-                        onChange={this.onChange}
-                        value={this.state.passwordConfirmation}
-                        type="text"
-                        name="passwordConfirmation"
-                        className="form-control"
-                    />
-                </div>
-                <div className="form-group">
-                    <label className="control-label" htmlFor="passwordConfirmation">Timezone</label>
-                    <select 
-                        onChange={this.onChange}
-                        value={this.state.timezone}
-                        name="timezone"
-                        className="form-control"
+                <TextFieldGroup 
+                    error={input_errors.username}
+                    label="Username"
+                    onChange={this.onChange}
+                    value={this.state.username}
+                    field="username"
+                    //type: 'text' is default
+                />
+                <TextFieldGroup 
+                    error={input_errors.email}
+                    label="Email"
+                    onChange={this.onChange}
+                    value={this.state.email}
+                    field="email"
+                    //type: 'text' is default
+                />
+                <TextFieldGroup 
+                    error={input_errors.password}
+                    label="Password"
+                    onChange={this.onChange}
+                    value={this.state.password}
+                    field="password"
+                    type="password"
+                />
+                <TextFieldGroup 
+                    error={input_errors.passwordConfirmation}
+                    label="Confirm Password"
+                    onChange={this.onChange}
+                    value={this.state.passwordConfirmation}
+                    field="passwordConfirmation"
+                    type="password"
+                />
+                
+                <div className={classnames('form-group', { 'has-error': input_errors.timezone })}>
+                <label className="control-label" htmlFor="timezone">Timezone</label>
+                <select 
+                    onChange={this.onChange}
+                    value={this.state.timezone}
+                    name="timezone"
+                    className="form-control"
+                >
+                    <option value="" disabled>Choose Timezone</option>
+                    {options.map(opt => {
+                    return (
+                    <option
+                        key={opt.key}
+                        value={opt.val}
                     >
-                        <option value="" disabled>Choose Timezone</option>
-                        {options}
-                    </select>
-                </div>
+                        {opt.key}
+                    </option>
+                    );
+                })}
+                </select>
+                {input_errors.timezone && <span className="help-block">{input_errors.timezone}</span>}
+            </div>
 
                 <div className="form-group">
-                    <button className="btn btn-primary btn-lg">
+                    <button disabled={this.state.isLoading} className="btn btn-primary btn-lg">
                         Sign up
                     </button>
                 </div>
@@ -123,6 +152,10 @@ class SignupForm extends Component {
 
 SignupForm.propTypes = {
     userSignupRequest: React.PropTypes.func.isRequired
+};
+
+SignupForm.contextTypes = {
+    router: React.PropTypes.object.isRequired
 };
 
 //use connect higher order function to provide this thunk function page component from redux
