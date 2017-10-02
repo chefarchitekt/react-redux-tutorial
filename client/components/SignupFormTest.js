@@ -4,79 +4,78 @@ import classnames from 'classnames';
 //import axios from 'axios';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
 
-import { TextFieldGroup, SelectGroup } from '../common';
+import { TextFieldGroup } from '../common';
 //SelectGroup is not done yet
-import { userSignupRequest, addFlashMessage } from '../actions';
+import { signupUserInput, userSignupRequest, signupUserInputError, addFlashMessage } from '../actions';
 import TimeZone from './TimeZone';
 import validateSignupInput from '../validations/validateSignupInput';
 
 
-class SignupForm extends Component {
+class SignupFormTest extends Component {
     constructor(props) {
         super(props); //also super() if we dont use this.props
-        this.state = {
-            username: '',
-            email: '',
-            password: '',
-            passwordConfirmation: '',
-            timezone: '',
-            isLoading: false,
-            input_errors: {},
-            server_errors: {}
-        };
+        
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-        //or at dom level
-        //<input onChange={this.onChange.bind(this)}
     }
 
     onChange(e) {
-        /* this.setState({ username: e.target.value }); */
-        //the above methos is not flexible as we needs to create 
-        //separate function for each element in the form
-
-        this.setState({ [e.target.name]: e.target.value });
+       this.props.signupUserInput({ prop: [e.target.name], value: e.target.value });
     }
 
     onSubmit(e) {
+        const { 
+            username, 
+            email, 
+            password, 
+            passwordConfirmation, 
+            timezone
+        } = this.props;
+
         e.preventDefault();
-        if (this.isValid()) {
-            this.setState({ input_errors: {}, server_errors: {}, isLoading: true });
-            console.log(this.state);
-            //axios.post('/api/users', { user: this.state });
-            this.props.userSignupRequest(this.state).then(
-                () => {
-                    this.props.addFlashMessage({
-                        type: 'success',
-                        text: 'Successful signup'
-                    });
-                    //browserHistory.push('/');
-                    this.context.router.push('/');
-                },
-                ({ err }) => {
-                    console.log(err);
-                    this.setState({ input_errors: err.data, server_errors: err });
+
+        if (this.isValid) {
+            this.props.userSignupRequest({ 
+                username, 
+                email, 
+                password, 
+                passwordConfirmation, 
+                timezone
+            }, this.context);
+
+            /*
+                if (isLoading) {
+
                 }
-            );
-            //this makes props expect userSignupRequest function from 
-            //parent component's render function (SignupPage)
+            */  
         }
     }
 
     isValid() {
-        const { errors, isValid } = validateSignupInput(this.state);
+        const { 
+            username, 
+            email, 
+            password, 
+            passwordConfirmation, 
+            timezone
+        } = this.props;
+        const { errors, isValid } = validateSignupInput({ 
+            username, 
+            email, 
+            password, 
+            passwordConfirmation, 
+            timezone
+        });
         if (!isValid) {
-            this.setState({ input_errors: errors });
+            this.props.signupUserInputError(errors);
         }
 
         return isValid;
     }
 
     render() {
-        const { input_errors } = this.state;
-        
+        const inputErrors = this.props.input_errors;
         const data = TimeZone();
         //console.log(JSON.stringify(data));
         //const options = (data, (val, key) => (key:val.text,  value:val.value)));
@@ -84,49 +83,48 @@ class SignupForm extends Component {
             { key: item.text, val: item.value }
         ));
         //console.log(JSON.stringify(options));
-        
-
+    
         return (
             <form onSubmit={this.onSubmit}>
                 <h1>Join our community</h1>
                 <TextFieldGroup 
-                    error={input_errors.username}
+                    error={inputErrors.username}
                     label="Username"
                     onChange={this.onChange}
-                    value={this.state.username}
+                    value={this.props.username}
                     field="username"
                     //type: 'text' is default
                 />
                 <TextFieldGroup 
-                    error={input_errors.email}
+                    error={inputErrors.email}
                     label="Email"
                     onChange={this.onChange}
-                    value={this.state.email}
+                    value={this.props.email}
                     field="email"
                     //type: 'text' is default
                 />
                 <TextFieldGroup 
-                    error={input_errors.password}
+                    error={inputErrors.password}
                     label="Password"
                     onChange={this.onChange}
-                    value={this.state.password}
+                    value={this.props.password}
                     field="password"
                     type="password"
                 />
                 <TextFieldGroup 
-                    error={input_errors.passwordConfirmation}
+                    error={inputErrors.passwordConfirmation}
                     label="Confirm Password"
                     onChange={this.onChange}
-                    value={this.state.passwordConfirmation}
+                    value={this.props.passwordConfirmation}
                     field="passwordConfirmation"
                     type="password"
                 />
                 
-                <div className={classnames('form-group', { 'has-error': input_errors.timezone })}>
+                <div className={classnames('form-group', { 'has-error': inputErrors.timezone })}>
                 <label className="control-label" htmlFor="timezone">Timezone</label>
                 <select 
                     onChange={this.onChange}
-                    value={this.state.timezone}
+                    value={this.props.timezone}
                     name="timezone"
                     className="form-control"
                 >
@@ -142,11 +140,11 @@ class SignupForm extends Component {
                     );
                 })}
                 </select>
-                {input_errors.timezone && <span className="help-block">{input_errors.timezone}</span>}
+                {inputErrors.timezone && <span className="help-block">{inputErrors.timezone}</span>}
             </div>
 
                 <div className="form-group">
-                    <button disabled={this.state.isLoading} className="btn btn-primary btn-lg">
+                    <button disabled={this.props.isLoading} className="btn btn-primary btn-lg">
                         Sign up
                     </button>
                 </div>
@@ -155,29 +153,47 @@ class SignupForm extends Component {
     }
 }
 
-SignupForm.propTypes = {
+SignupFormTest.propTypes = {
     userSignupRequest: React.PropTypes.func.isRequired,
     addFlashMessage: React.PropTypes.func.isRequired
 };
 
-SignupForm.contextTypes = {
+SignupFormTest.contextTypes = {
     router: React.PropTypes.object.isRequired
 };
 
-//use connect higher order function to provide this thunk function page component from redux
-//connect(mapStateToProps (state , return object), ,mapDispatchToProps)\
-//mapStateToProps connect to redux store
-//mapDispatchToProps psecify action creator wrapped in dispatch
+const mapStateToProps = (state) => {
+    const { 
+        username, 
+        email, 
+        password, 
+        passwordConfirmation, 
+        timezone, 
+        isLoading,
+        input_errors,
+        server_errors
+    } = state.userSignup;
+
+    return { 
+        username, 
+        email, 
+        password, 
+        passwordConfirmation, 
+        timezone, 
+        isLoading,
+        input_errors,
+        server_errors
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
+        signupUserInput,
+        signupUserInputError,
         userSignupRequest, //userSignupRequest: userSignupRequest,
         addFlashMessage //addFlashMessage: addFlashMessage
     }, dispatch);
 };
 
-
-//export default connect((state) => { return {}; }, { userSignupRequest })(SignupPage);
-
-export default connect(null, mapDispatchToProps)(SignupForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SignupFormTest);
 

@@ -2,7 +2,7 @@ import validator from 'validator';
 import isEmpty from 'lodash/isEmpty';
 
 //validator isNull is deprecated 
-const validateInput = (data) => {
+const validateSignupInput = (data) => {
     const errors = {};
     
         if (validator.isEmpty(data.username)) {
@@ -35,4 +35,4 @@ const validateInput = (data) => {
         };
 };
 
-export default validateInput;
+export default validateSignupInput;
